@@ -1,0 +1,15 @@
+datasource db {
+    provider = "sqlite"
+    url      = "file:./primes.sqlite"
+}
+
+generator client {
+    provider = "prisma-client"
+    output   = "prisma-db"
+    runtime  = "deno"
+    library  = "client"
+}
+
+model Prime {
+    id Int @id
+}
