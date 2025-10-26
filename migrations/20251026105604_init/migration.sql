@@ -1,4 +1,0 @@
--- CreateTable
-CREATE TABLE "Prime" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-);

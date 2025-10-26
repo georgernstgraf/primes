@@ -10,6 +10,10 @@ generator client {
     library  = "client"
 }
 
-model Prime {
+model consecutive {
+    id Int @id
+}
+
+model alone {
     id Int @id
 }

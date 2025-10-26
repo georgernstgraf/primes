@@ -1,0 +1,9 @@
+-- CreateTable
+CREATE TABLE "consecutive" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+);
+
+-- CreateTable
+CREATE TABLE "alone" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+);
