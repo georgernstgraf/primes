@@ -1,8 +1,11 @@
 import { primeService } from "./primeservice.ts";
+import { last_consecutive } from "./primerepo.ts";
 
-for (let i = 2; i <= 100; i++) {
-    const rnd = Math.floor(Math.random() * 10e6);
-    primeService.isPrime(rnd).then((isPrime) => {
-        console.log(`Is ${rnd} prime? ${isPrime}`);
-    });
+while (true) {
+    const versuch = Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+    if (await primeService.isPrime(versuch)) {
+        console.log(`Found prime: ${versuch}`);
+    }
 }
+
+// await primeService.ensure_consecutives_up_to(101000);

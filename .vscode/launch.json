@@ -6,7 +6,25 @@
     "configurations": [
         {
             "request": "launch",
-            "name": "Launch Program",
+            "name": "debug",
+            "type": "node",
+            "cwd": "${workspaceFolder}",
+            "env": {},
+            "runtimeExecutable": "/home/georg/.deno/bin/deno",
+            "runtimeArgs": [
+                "run",
+                "--unstable",
+                "--inspect-wait",
+                "--allow-env",
+                "--allow-read",
+                "--allow-ffi",
+                "debug.ts"
+            ],
+            "attachSimplePort": 9229
+        },
+        {
+            "request": "launch",
+            "name": "main",
             "type": "node",
             "cwd": "${workspaceFolder}",
             "env": {},

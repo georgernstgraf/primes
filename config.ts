@@ -1,1 +1,1 @@
-export let max_primes_in_memory = 1000; // configurable
+export const max_primes_in_memory = 100000; // configurable

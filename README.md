@@ -15,7 +15,6 @@ Tabellen:
 
 ### aus `consecutive` bis zur Wurzel probieren
 
-
 ## Klasse PrimeService
 
 - könnte über eine Generator Funktion die `next()` Primzahl liefern

@@ -1,6 +1,7 @@
 import { PrismaClient } from "./prisma-db/client.ts";
 import { max_primes_in_memory } from "./config.ts";
-const prisma = new PrismaClient({ log: ["query", "info", "warn", "error"] });
+// const prisma = new PrismaClient({ log: ["query", "info", "warn", "error"] });
+const prisma = new PrismaClient();
 
 await Promise.all([
     prisma.consecutive.upsert({
@@ -18,17 +19,17 @@ await Promise.all([
 /**
  * Retrieves a list of consecutive IDs starting from a specified number.
  *
- * @param start - The starting number from which to retrieve consecutive IDs.
+ * @param greater - The starting number from which to retrieve consecutive IDs.
  * @returns A promise that resolves to an array of consecutive IDs, or an empty array if no results are found.
  */
-export async function consecutives_from(
-    start: number,
-): Promise<[number, ...number[]]> {
+export async function consecutives_greater(
+    greater: number,
+): Promise<[number]> {
     return (await prisma.consecutive.findMany({
-        where: { id: { gte: start } },
+        where: { id: { gt: greater } },
         orderBy: { id: "asc" },
         take: max_primes_in_memory,
-    })).map((r) => r.id) as [number, ...number[]];
+    })).map((r) => r.id) as [number];
 }
 /**
  * Check whether a number exists in the set of consecutive primes.
@@ -76,20 +77,38 @@ export async function last_consecutive(): Promise<number> {
  * @param {number} i - The id to mark as consecutive.
  * @returns {Promise<void>} Resolves when both operations complete.
  */
-export async function store_consecutive(
+export async function ensure_consecutive(
     i: number,
     delete_alone: boolean = false,
 ): Promise<void> {
+    const ishere = await prisma.consecutive.findUnique({
+        where: { id: i },
+    });
+    ishere
+        ? console.log(
+            `ensure_consecutive called for ${i}, already here: ${
+                ishere !== null
+            }`,
+        )
+        : null;
+    console.log(`db storing consecutive prime ${i}`);
     await Promise.all([
-        prisma.consecutive.create({
-            data: { id: i },
+        prisma.consecutive.upsert({
+            where: { id: i },
+            update: {},
+            create: { id: i },
         }),
         delete_alone
             ? prisma.alone.delete({ where: { id: i } })
             : Promise.resolve(),
     ]);
 }
-
+export async function ensure_alone(i: number): Promise<void> {
+    // console.log(`db storing lonesome prime ${i}`);
+    await prisma.alone.create({
+        data: { id: i },
+    });
+}
 /**
  * Fetch all ids from the `alone` table as a Set for fast lookup.
  *
