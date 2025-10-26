@@ -104,6 +104,9 @@ export async function ensure_consecutive(
         data: { id: i },
     });
     state.delete_cg_cache();
+    await prisma.alone.deleteMany({
+        where: { id: { lte: i } },
+    });
 }
 export async function consecutives_count(): Promise<number> {
     const count = await prisma.consecutive.count();
@@ -114,17 +117,6 @@ export async function ensure_alone(i: number): Promise<void> {
     await prisma.alone.create({
         data: { id: i },
     });
-}
-/**
- * Fetch all ids from the `alone` table as a Set for fast lookup.
- *
- * @returns {Promise<Set<number>>} A set of all `alone` ids.
- */
-export async function all_alones(): Promise<Set<number>> {
-    const rows = await prisma.alone.findMany({
-        select: { id: true },
-    });
-    return new Set((rows ?? []).map((a) => a.id));
 }
 /**
  * Check whether a number exists in the set of alone primes.
@@ -147,4 +139,10 @@ export async function biggest_alone(): Promise<number | null> {
         orderBy: { id: "desc" },
     });
     return biggest_alone ? biggest_alone.id : null;
+}
+export async function smallest_alone(): Promise<number | null> {
+    const smallest_alone = await prisma.alone.findFirst({
+        orderBy: { id: "asc" },
+    });
+    return smallest_alone ? smallest_alone.id : null;
 }

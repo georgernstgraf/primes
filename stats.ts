@@ -14,3 +14,6 @@ console.log(`Total alone primes in DB: ${countAlones}`);
 
 const biggestAlone = await repo.biggest_alone()!;
 console.log(`Biggest alone prime in DB: ${biggestAlone}`);
+
+const smallestAlone = await repo.smallest_alone()!;
+console.log(`Smallest alone prime in DB: ${smallestAlone}`);
