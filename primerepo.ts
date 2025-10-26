@@ -16,6 +16,33 @@ await Promise.all([
     }),
 ]);
 
+class State {
+    cg_cache: Map<number, [number]> = new Map();
+    get_cg_cache(
+        greater: number,
+    ): [number] | undefined {
+        return this.cg_cache.get(greater);
+    }
+    set_cg_cache(
+        greater: number,
+        precious: [number],
+    ): void {
+        this.cg_cache.set(greater, precious);
+    }
+    delete_cg_cache() {
+        for (const key of this.cg_cache.keys()) {
+            if (this.cg_cache.get(key)!.length < max_primes_in_memory) {
+                console.log(
+                    `deleting cg_cache key ${key}, length ${
+                        this.cg_cache.get(key)!.length
+                    }`,
+                );
+                this.cg_cache.delete(key);
+            }
+        }
+    }
+}
+const state = new State();
 /**
  * Retrieves a list of consecutive IDs starting from a specified number.
  *
@@ -25,11 +52,18 @@ await Promise.all([
 export async function consecutives_greater(
     greater: number,
 ): Promise<[number]> {
-    return (await prisma.consecutive.findMany({
+    // console.log(`db fetching consecutives greater than ${greater}`);
+    const cached = state.get_cg_cache(greater);
+    if (cached) {
+        return [...cached];
+    }
+    const precious = (await prisma.consecutive.findMany({
         where: { id: { gt: greater } },
         orderBy: { id: "asc" },
         take: max_primes_in_memory,
     })).map((r) => r.id) as [number];
+    state.set_cg_cache(greater, precious);
+    return [...precious];
 }
 /**
  * Check whether a number exists in the set of consecutive primes.
@@ -43,20 +77,6 @@ export async function contained_in_consecutives(n: number) {
     });
     return res !== null;
 }
-/**
- * Get the next (or same) consecutive prime id at or above a given upper bound.
- *
- * @param {number} upperbound - Minimum id to search from (inclusive).
- * @returns {Promise<number|null>} The matching id if found; otherwise null.
- */
-export async function next_or_same_consecutive(upperbound: number) {
-    const high_consecutive = await prisma.consecutive.findFirst({
-        where: { id: { gte: upperbound } },
-        orderBy: { id: "asc" },
-    });
-    return high_consecutive !== null ? high_consecutive.id : null;
-}
-
 /**
  * Returns the highest consecutive prime id stored.
  *
@@ -79,29 +99,15 @@ export async function last_consecutive(): Promise<number> {
  */
 export async function ensure_consecutive(
     i: number,
-    delete_alone: boolean = false,
 ): Promise<void> {
-    const ishere = await prisma.consecutive.findUnique({
-        where: { id: i },
+    await prisma.consecutive.create({
+        data: { id: i },
     });
-    ishere
-        ? console.log(
-            `ensure_consecutive called for ${i}, already here: ${
-                ishere !== null
-            }`,
-        )
-        : null;
-    console.log(`db storing consecutive prime ${i}`);
-    await Promise.all([
-        prisma.consecutive.upsert({
-            where: { id: i },
-            update: {},
-            create: { id: i },
-        }),
-        delete_alone
-            ? prisma.alone.delete({ where: { id: i } })
-            : Promise.resolve(),
-    ]);
+    state.delete_cg_cache();
+}
+export async function consecutives_count(): Promise<number> {
+    const count = await prisma.consecutive.count();
+    return count;
 }
 export async function ensure_alone(i: number): Promise<void> {
     // console.log(`db storing lonesome prime ${i}`);
@@ -131,4 +137,14 @@ export async function contained_in_alones(n: number) {
         where: { id: n },
     });
     return res !== null;
+}
+export async function alone_count(): Promise<number> {
+    const count = await prisma.alone.count();
+    return count;
+}
+export async function biggest_alone(): Promise<number | null> {
+    const biggest_alone = await prisma.alone.findFirst({
+        orderBy: { id: "desc" },
+    });
+    return biggest_alone ? biggest_alone.id : null;
 }

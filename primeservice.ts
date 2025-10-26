@@ -77,38 +77,11 @@ class PrimeService {
             if (yieldval > upperbound) return;
             yield yieldval;
             db.ensure_consecutive(yieldval);
-            console.log(
-                `yielded and saved to db: ${yieldval}, (upperbound: ${upperbound})`,
-            );
+            // console.log(
+            //     `yielded and saved to db: ${yieldval}, (upperbound: ${upperbound})`,
+            // );
         }
         return;
-    }
-    async ensure_consecutives_up_to(target: number) {
-        const last_consecutive = await db.last_consecutive();
-        if (last_consecutive >= target) {
-            return;
-        }
-        const alones = await db.all_alones();
-        // We need to check_prime all numbers from last_consecutive + 1 to n
-        let checkme = last_consecutive;
-        while (checkme < target) {
-            checkme += 2;
-            if (alones.has(checkme)) {
-                db.ensure_consecutive(checkme, true);
-                continue;
-            }
-            const checkme_sqrt = Math.floor(Math.sqrt(checkme));
-            let is_prime = true;
-            for await (const p of this.prime_list_gen(checkme_sqrt)) {
-                if (checkme % p === 0) {
-                    is_prime = false;
-                    break;
-                }
-            }
-            if (is_prime) {
-                await db.ensure_consecutive(checkme, false);
-            }
-        }
     }
 }
 export const primeService = await new PrimeService();
