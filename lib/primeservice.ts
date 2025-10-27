@@ -1,6 +1,6 @@
 import * as db from "./primerepo.ts";
-class PrimeService {
-    async isPrime(n: number): Promise<boolean> {
+export class PrimeService {
+    static async isPrime(n: number): Promise<boolean> {
         if (n <= 1) return false;
         if (await db.contained_in_consecutives(n)) {
             return true;
@@ -10,7 +10,7 @@ class PrimeService {
         }
         // some code to find if false
         const root = Math.floor(Math.sqrt(n));
-        const gen = this.prime_list_gen(root);
+        const gen = PrimeService.prime_list_gen(root);
         for await (const p of gen) {
             if (n % p === 0) {
                 return false;
@@ -25,7 +25,7 @@ class PrimeService {
      * @param upperbound the upper bound for the prime numbers to generate
      * @return AsyncGenerator<number, undefined>
      */
-    async *prime_list_gen(
+    static async *prime_list_gen(
         upperbound: number,
     ): AsyncGenerator<number, undefined> {
         let mylist = await db.consecutives_greater(1) as number[]; // will be up to config.max_primes_in_memory
@@ -83,5 +83,30 @@ class PrimeService {
         }
         return;
     }
+    static async *primes_db_gen(): AsyncGenerator<number, undefined> {
+        let mylist = await db.consecutives_greater(1) as number[]; // will be up to config.max_primes_in_memory
+        let yieldval = mylist.shift();
+        if (yieldval === undefined) {
+            throw new Error(
+                "even first consecutives_greater returned empty list",
+            );
+        }
+        let last_yielded;
+        while (true) {
+            // console.log(`yielding from cache: ${yieldval}`);
+            yield yieldval;
+            last_yielded = yieldval;
+            if (mylist.length === 0) { // so empty
+                mylist = await db.consecutives_greater(last_yielded);
+                yieldval = mylist.shift();
+                if (!yieldval) {
+                    break;
+                }
+            } else { // list still not empty
+                yieldval = mylist.shift()!;
+            }
+        }
+        console.log("db sucked out, returning ...");
+        return;
+    }
 }
-export const primeService = await new PrimeService();

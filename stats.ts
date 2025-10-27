@@ -1,5 +1,5 @@
 // import { primeService } from "./primeservice.ts";
-import * as repo from "./primerepo.ts";
+import * as repo from "./lib/primerepo.ts";
 
 console.log("Gathering statistics...");
 

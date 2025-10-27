@@ -1,5 +1,5 @@
-import { PrismaClient } from "./prisma-db/client.ts";
-import { max_primes_in_memory } from "./config.ts";
+import { PrismaClient } from "../prisma-db/client.ts";
+import { config } from "./config.ts";
 // const prisma = new PrismaClient({ log: ["query", "info", "warn", "error"] });
 const prisma = new PrismaClient();
 
@@ -27,27 +27,15 @@ class State {
         greater: number,
         precious: [number],
     ): void {
+        if (precious.length as number !== config.max_primes_in_memory) return;
         this.cg_cache.set(greater, precious);
-    }
-    delete_cg_cache() {
-        for (const key of this.cg_cache.keys()) {
-            if (this.cg_cache.get(key)!.length < max_primes_in_memory) {
-                console.log(
-                    `deleting cg_cache key ${key}, length ${
-                        this.cg_cache.get(key)!.length
-                    }`,
-                );
-                this.cg_cache.delete(key);
-            }
-        }
     }
 }
 const state = new State();
 /**
- * Retrieves a list of consecutive IDs starting from a specified number.
+ * gets a "Page" of Primes from the database, ideally cached
  *
  * @param greater - The starting number from which to retrieve consecutive IDs.
- * @returns A promise that resolves to an array of consecutive IDs, or an empty array if no results are found.
  */
 export async function consecutives_greater(
     greater: number,
@@ -60,7 +48,7 @@ export async function consecutives_greater(
     const precious = (await prisma.consecutive.findMany({
         where: { id: { gt: greater } },
         orderBy: { id: "asc" },
-        take: max_primes_in_memory,
+        take: config.max_primes_in_memory,
     })).map((r) => r.id) as [number];
     state.set_cg_cache(greater, precious);
     return [...precious];
@@ -103,7 +91,6 @@ export async function ensure_consecutive(
     await prisma.consecutive.create({
         data: { id: i },
     });
-    state.delete_cg_cache();
     await prisma.alone.deleteMany({
         where: { id: { lte: i } },
     });
