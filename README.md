@@ -1,20 +1,14 @@
 # Primes
 
-Mit Datenbankunterstützung
+## Ein neuer Primzahl Generator mit Datenbankunterstützung
 
-Tabellen:
+Es gibt 2 Tabellen, eine
 
-- consecutive
-- alone
+- `consecutive`: Hier werden die Primzahlen in aufsteigender Reihenfolge gelistet
+- `alone`: Hier werden entdeckte Primzahlen gespeichert, die aber noch zu groß für "consecutive" sind
 
-## seeding
+## Tech-Stack
 
-- alle Primzahlen <= 10e7 in consecutive einfüllen
-
-## Basisfunktion `isPrime(n): boolean`
-
-### aus `consecutive` bis zur Wurzel probieren
-
-## Klasse PrimeService
-
-- könnte über eine Generator Funktion die `next()` Primzahl liefern
+- deno / prisma / sqlite
+- Async Generator Pattern
+- dynlib für `openssl prime` resp. `BN_check_prime` zum Verifizieren
