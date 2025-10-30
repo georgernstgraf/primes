@@ -1,4 +1,6 @@
 **/prisma-db/
 primes.sqlite
 primes.sqlite-journal
+primes.sqlite-shm
+primes.sqlite-wal
 openssl_check.so

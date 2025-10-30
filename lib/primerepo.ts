@@ -1,5 +1,6 @@
 import { PrismaClient } from "../prisma-db/client.ts";
 import { config } from "./config.ts";
+import { Pragma_Response } from "./types.ts";
 // const prisma = new PrismaClient({ log: ["query", "info", "warn", "error"] });
 const prisma = new PrismaClient();
 
@@ -132,4 +133,34 @@ export async function smallest_alone(): Promise<number | null> {
         orderBy: { id: "asc" },
     });
     return smallest_alone ? smallest_alone.id : null;
+}
+export async function disconnect_prisma() {
+    await prisma.$disconnect();
+}
+export async function report_all_pragmas() {
+    // const query = "PRAGMA table_info(consecutive)";
+    const query =
+        `SELECT "journal_mode" AS name, (SELECT journal_mode FROM pragma_journal_mode) AS value
+UNION ALL
+SELECT "synchronous", (SELECT synchronous FROM pragma_synchronous)
+UNION ALL
+SELECT "busy_timeout", (SELECT timeout FROM pragma_busy_timeout)
+UNION ALL
+SELECT "foreign_keys", (SELECT foreign_keys FROM pragma_foreign_keys)
+UNION ALL
+SELECT "cache_size", (SELECT cache_size FROM pragma_cache_size)
+UNION ALL
+SELECT "temp_store", (SELECT temp_store FROM pragma_temp_store)
+UNION ALL
+SELECT "page_size", (SELECT page_size FROM pragma_page_size)
+UNION ALL
+SELECT "locking_mode", (SELECT locking_mode FROM pragma_locking_mode)
+UNION ALL
+SELECT "auto_vacuum", (SELECT auto_vacuum FROM pragma_auto_vacuum)
+UNION ALL
+SELECT "recursive_triggers", (SELECT recursive_triggers FROM pragma_recursive_triggers)
+UNION ALL
+SELECT "secure_delete", (SELECT secure_delete FROM pragma_secure_delete);`;
+    return await prisma
+        .$queryRawUnsafe(query) as Pragma_Response[];
 }
