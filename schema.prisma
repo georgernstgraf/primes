@@ -7,7 +7,6 @@ generator client {
     provider = "prisma-client"
     output   = "prisma-db"
     runtime  = "deno"
-    library  = "client"
 }
 
 model consecutive {
