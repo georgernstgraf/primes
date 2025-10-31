@@ -1,11 +1,11 @@
 datasource eratosthenes {
     provider = "sqlite"
-    url      = "file:../../erastothenes.sqlite?query_timeout=21000"
+    url      = "file:../../eratosthenes.sqlite?query_timeout=21000"
 }
 
-generator erastothenes_client {
+generator eratosthenes_client {
     provider = "prisma-client"
-    output   = "erastothenes_prisma"
+    output   = "../../lib/eratosthenes_prisma"
     runtime  = "deno"
 }
 
