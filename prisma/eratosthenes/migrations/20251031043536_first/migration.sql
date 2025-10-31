@@ -1,0 +1,5 @@
+-- CreateTable
+CREATE TABLE "numbers" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "isprime" BOOLEAN NOT NULL
+);
