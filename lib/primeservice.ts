@@ -1,23 +1,37 @@
 import * as db from "./primerepo.ts";
+import * as ossl from "./openssl_checkprime.ts";
 export class PrimeService {
-    static async isPrime(n: number): Promise<boolean> {
-        if (n <= 1) return false;
-        if (await db.contained_in_consecutives(n)) {
-            return true;
-        }
-        if (await db.contained_in_alones(n)) {
-            return true;
-        }
-        // some code to find if false
-        const root = Math.floor(Math.sqrt(n));
-        const gen = PrimeService.prime_list_gen(root);
-        for await (const p of gen) {
-            if (n % p === 0) {
-                return false;
+    static async isPrime(
+        to_check: number,
+        use_db: boolean = true,
+    ): Promise<boolean> {
+        if (to_check <= 1) return false;
+        if (use_db) {
+            if (await db.contained_in_consecutives(to_check)) {
+                return true;
+            }
+            if (await db.contained_in_alones(to_check)) {
+                return true;
             }
         }
+        // some code to find if false
+        const root = Math.floor(Math.sqrt(to_check));
+        const gen = PrimeService.prime_list_gen(root);
+        // consuming it ensures consecutives up to root
+        for await (const _p of gen) {
+            // if (n % p === 0) {
+            //     return false;
+            // }
+        }
         // now it is clear, we are prime:
-        await db.ensure_alone(n);
+        const is_prime = await ossl.isPrime(to_check);
+        if (!is_prime) {
+            return false;
+        }
+        // store it:
+        if (use_db) {
+            await db.ensure_alone(to_check);
+        }
         return true;
     }
     /**
@@ -36,9 +50,7 @@ export class PrimeService {
             );
         }
         let last_yielded;
-        // console.log(
         //     `starting to yield from db ... my upperbound: ${upperbound}`,
-        // );
         while (true) {
             // console.log(`yielding from cache: ${yieldval}`);
             yield yieldval;
@@ -72,7 +84,7 @@ export class PrimeService {
         yieldval = last_yielded;
         while (yieldval < upperbound) {
             yieldval += 2;
-            if (!await this.isPrime(yieldval)) continue;
+            if (!await this.isPrime(yieldval, false)) continue;
             // I have a new prime, but:
             if (yieldval > upperbound) return;
             yield yieldval;

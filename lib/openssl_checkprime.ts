@@ -1,6 +1,5 @@
-const libName = "./lib/openssl_check.so";
 const dylib = Deno.dlopen(
-    libName,
+    "./lib/openssl_check.so",
     {
         "check_dec_prime": {
             parameters: ["pointer"],

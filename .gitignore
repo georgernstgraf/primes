@@ -1,6 +1,7 @@
-**/prisma-db/
-primes.sqlite
-primes.sqlite-journal
-primes.sqlite-shm
-primes.sqlite-wal
+prisma-db/
+erastothenes_prisma/
+*.sqlite
+*.sqlite-journal
+*.sqlite-shm
+*.sqlite-wal
 openssl_check.so

@@ -1,0 +1,15 @@
+datasource eratosthenes {
+    provider = "sqlite"
+    url      = "file:../../erastothenes.sqlite?query_timeout=21000"
+}
+
+generator erastothenes_client {
+    provider = "prisma-client"
+    output   = "erastothenes_prisma"
+    runtime  = "deno"
+}
+
+model numbers {
+    id      Int     @id
+    isprime Boolean
+}

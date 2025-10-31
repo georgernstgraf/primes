@@ -1,6 +1,6 @@
 datasource db {
     provider = "sqlite"
-    url      = "file:./primes.sqlite?query_timeout=21000"
+    url      = "file:../../primes.sqlite?query_timeout=21000"
 }
 
 generator client {
