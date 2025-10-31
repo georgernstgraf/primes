@@ -11,5 +11,10 @@ generator eratosthenes_client {
 
 model numbers {
     id      Int     @id
-    isprime Boolean
+    isprime Boolean @default(true)
+}
+
+model kvstore {
+    key   String @id
+    value Json
 }

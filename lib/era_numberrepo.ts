@@ -48,7 +48,7 @@ export async function ensure_numbers() {
         }
         console.log(`Inserting numbers from ${start} to ${end} ...`);
         await db.numbers.createMany({
-            data: to_insert.map((x) => ({ id: x.id, isprime: true })),
+            data: to_insert,
         });
     }
 }
