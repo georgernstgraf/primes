@@ -10,8 +10,7 @@ generator eratosthenes_client {
 }
 
 model numbers {
-    id      Int     @id
-    isprime Boolean @default(true)
+    id BigInt @id
 }
 
 model kvstore {

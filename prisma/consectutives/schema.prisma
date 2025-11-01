@@ -10,9 +10,9 @@ generator client {
 }
 
 model consecutive {
-    id Int @id
+    id BigInt @id
 }
 
 model alone {
-    id Int @id
+    id BigInt @id
 }

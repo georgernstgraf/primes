@@ -12,7 +12,7 @@ const dylib = Deno.dlopen(
  * @param maybe_prime
  * @returns boolean
  */
-export function isPrime(maybe_prime: number): boolean {
+export function isPrime(maybe_prime: number | bigint): boolean {
     const cString = new TextEncoder().encode(maybe_prime.toString() + "\0");
     const result: number = dylib.symbols.check_dec_prime(
         Deno.UnsafePointer.of(cString),

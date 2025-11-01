@@ -3,7 +3,9 @@
         "main": "deno run --allow-env --allow-read --allow-ffi main.ts",
         "stats": "deno run --allow-env --allow-read --allow-ffi stats.ts",
         "verify": "deno run --allow-env --allow-read --allow-ffi verify_with_openssl.ts",
-        "era": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes.ts"
+        "era": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes.ts",
+        "eravera": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes_verify.ts",
+        "eranew": "deno -A prisma migrate reset --force  --schema prisma/eratosthenes"
     },
     "fmt": {
         "indentWidth": 4
