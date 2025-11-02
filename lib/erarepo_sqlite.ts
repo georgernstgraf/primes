@@ -102,7 +102,7 @@ export function ensure_numbers(max_ensure: number): number {
         WITH RECURSIVE series(n) AS (
             SELECT ? AS n
             UNION ALL
-            SELECT n + 1 FROM series WHERE n < ?
+            SELECT n + 2 FROM series WHERE n < ?
         )
         INSERT INTO numbers (id)
         SELECT n FROM series

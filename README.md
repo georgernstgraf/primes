@@ -28,6 +28,6 @@ Es gibt 2 Tabellen, eine
 
 ## benchmarks (smell: `O(n log n)`)
 
-- 1e6: 00:12
-- 21e6: 09:18
-- 1e8: xxxx (ensure: 00:38)
+- 1e6: 00:01
+- 1e7: 16:00
+- 1e8: xxxx (ensure: 00:18, index: 00:25)

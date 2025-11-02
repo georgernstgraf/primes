@@ -13,6 +13,9 @@ const display_count = 10;
 const crossingouttook = "Crossing out took";
 const backuptook = "Backup took";
 
+const timeall = "Total time";
+console.time(timeall);
+
 dbstats();
 db.ensure_numbers(sieve_size);
 dbstats();
@@ -25,7 +28,8 @@ Deno.stdout.writeSync(
     te.encode("crossing:"),
 );
 for (
-    let p = db.smallest_number_in_db();
+    let p: number | null = 3;
+    // there are no multiples of 2 in db
     p && p * p < limit;
     p = db.prime_after(p)
 ) {
@@ -56,7 +60,7 @@ console.log("backing up ...");
 console.time(backuptook);
 db.backup_db(`eranative_backup_${sieve_size}.db`);
 console.timeEnd(backuptook);
-
+console.timeEnd(timeall);
 function dbstats() {
     console.log(
         `Database: MIN: ${db.smallest_number_in_db()}, MAX: ${db.biggest_number_in_db()}, TOTAL: ${db.total_count_in_db()}`,
