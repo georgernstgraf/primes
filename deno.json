@@ -5,13 +5,16 @@
         "verify": "deno run --allow-env --allow-read --allow-ffi verify_with_openssl.ts",
         "era": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes.ts",
         "eravera": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes_verify.ts",
-        "eranew": "deno -A prisma migrate reset --force  --schema prisma/eratosthenes"
+        "eranew": "deno -A prisma migrate reset --force  --schema prisma/eratosthenes",
+        "eranative": "deno run --allow-env --allow-read --allow-write --allow-ffi era_native.ts"
     },
     "fmt": {
         "indentWidth": 4
     },
     "imports": {
+        "@db/sqlite": "jsr:@db/sqlite@^0.12.0",
         "@prisma/client": "npm:@prisma/client@^6.18.0",
-        "prisma": "npm:prisma@^6.18.0"
+        "prisma": "npm:prisma@^6.18.0",
+        "@std/assert": "jsr:@std/assert@1"
     }
 }

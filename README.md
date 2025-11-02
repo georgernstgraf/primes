@@ -1,9 +1,15 @@
 # Primes
 
-Ein Primzahl Generator mit Datenbankunterstützung, 2 verschiedene Implementierungen
+Ein Primzahl Generator mit Datenbankunterstützung, 3 verschiedene Implementierungen
 
-## Implementierung Sieb des Eratosthenes
+## Native sqlite Implementierung (`jsr:@db/sqlite`)
 
+- rekursive CTEs
+- auskreuzen mit `DELETE FROM ... WHERE id in (SELECT p * n ...)`
+
+## Implementierung Sieb des Eratosthenes mit Prisma
+
+- prisma/eratosthenes
 - verwendet sqlite
 - praktisch alle Logik mit sql statements umgesetzt (insbesondere das auskreuzen)
 
