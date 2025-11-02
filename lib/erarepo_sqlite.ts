@@ -81,6 +81,8 @@ export function delete_multiples_of(p: number): number {
     return changes;
 }
 export function ensure_numbers(max_ensure: number): number {
+    const ensuringtook = "repo: Ensuring numbers";
+    console.time(ensuringtook);
     while (!biggest_number_in_db()) {
         console.log(`repo: DB empty, inserting initial number 2`);
         db.prepare("INSERT INTO numbers (id) VALUES (?)").run(2);
@@ -106,9 +108,13 @@ export function ensure_numbers(max_ensure: number): number {
         SELECT n FROM series
     `);
     const insertions = stmt.run(start, max_ensure);
-    console.log(
+    console.timeLog(
+        ensuringtook,
         `repo: Ensured numbers, did ${insertions} insertions.`,
     );
+    db.sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_numbers_id ON numbers (id)`;
+    console.timeLog(ensuringtook, `repo: Created unique index on numbers.id`);
+    console.timeEnd(ensuringtook);
     return insertions;
 }
 export function backup_db(name: string): void {

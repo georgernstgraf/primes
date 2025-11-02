@@ -2,17 +2,19 @@ import { assertFalse } from "@std/assert";
 import * as db from "./lib/erarepo_sqlite.ts";
 import { isPrime } from "./lib/openssl_checkprime.ts";
 
-const sieve_size = 100_000_000;
+const sieve_size = Deno.args[0]
+    ? Math.floor(parseFloat(Deno.args[0]))
+    : 1_000_000;
+if (!sieve_size) {
+    throw new Error(`Error parsing sieve_size from '${Deno.args[0]}'`);
+}
 const display_count = 10;
 
-const ensuringtook = "Ensuring numbers took";
 const crossingouttook = "Crossing out took";
 const backuptook = "Backup took";
 
 dbstats();
-console.time(ensuringtook);
 db.ensure_numbers(sieve_size);
-console.timeEnd(ensuringtook);
 dbstats();
 
 const limit: number = db.biggest_number_in_db()!;
