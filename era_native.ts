@@ -2,14 +2,15 @@ import { assertFalse } from "@std/assert";
 import * as db from "./lib/erarepo_sqlite.ts";
 import { isPrime } from "./lib/openssl_checkprime.ts";
 
-const sieve_size = 1_000_000;
+const sieve_size = 100_000_000;
 const display_count = 10;
 
 const ensuringtook = "Ensuring numbers took";
 const crossingouttook = "Crossing out took";
-console.time(ensuringtook);
+const backuptook = "Backup took";
 
 dbstats();
+console.time(ensuringtook);
 db.ensure_numbers(sieve_size);
 console.timeEnd(ensuringtook);
 dbstats();
@@ -17,20 +18,20 @@ dbstats();
 const limit: number = db.biggest_number_in_db()!;
 
 console.time(crossingouttook);
+const te = new TextEncoder();
 Deno.stdout.writeSync(
-    new TextEncoder().encode("each dot is a crossing operation: "),
+    te.encode("crossing:"),
 );
-const dot = new TextEncoder().encode(".");
 for (
     let p = db.smallest_number_in_db();
     p && p * p < limit;
     p = db.prime_after(p)
 ) {
+    Deno.stdout.writeSync(te.encode(` ${p}`));
     const _deleted = db.delete_multiples_of(p);
-    Deno.stdout.writeSync(dot);
     //console.log(`deleted ${deleted} multiples of ${p}`);
 }
-Deno.stdout.writeSync(new TextEncoder().encode("\n"));
+Deno.stdout.writeSync(te.encode("\n"));
 console.timeEnd(crossingouttook);
 
 console.log(
@@ -48,6 +49,12 @@ for (const n of db.last_n_primes(display_count)) {
     last = n;
 }
 dbstats();
+
+console.log("backing up ...");
+console.time(backuptook);
+db.backup_db(`eranative_backup_${sieve_size}.db`);
+console.timeEnd(backuptook);
+
 function dbstats() {
     console.log(
         `Database: MIN: ${db.smallest_number_in_db()}, MAX: ${db.biggest_number_in_db()}, TOTAL: ${db.total_count_in_db()}`,

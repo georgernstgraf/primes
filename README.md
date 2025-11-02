@@ -25,3 +25,9 @@ Es gibt 2 Tabellen, eine
 - deno / prisma / sqlite
 - Async Generator Pattern
 - dynlib für `openssl prime` resp. `BN_check_prime` zum Verifizieren
+
+## benchmarks (smell: `O(n log n)`)
+
+- 1e6: 00:12
+- 21e6: 09:18
+- 1e8: xxxx (ensure: 00:38)

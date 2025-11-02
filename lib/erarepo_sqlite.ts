@@ -2,7 +2,6 @@ import { Database } from "@db/sqlite";
 
 // Create in-memory SQLite database
 const db = new Database(":memory:");
-
 // Set SQLite pragmas for performance
 // db.exec("PRAGMA journal_mode = WAL;");
 // db.exec("PRAGMA synchronous = NORMAL;");
@@ -111,4 +110,9 @@ export function ensure_numbers(max_ensure: number): number {
         `repo: Ensured numbers, did ${insertions} insertions.`,
     );
     return insertions;
+}
+export function backup_db(name: string): void {
+    const backup_db = new Database(name);
+    db.backup(backup_db);
+    backup_db.close();
 }
