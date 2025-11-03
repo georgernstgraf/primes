@@ -28,6 +28,9 @@ Es gibt 2 Tabellen, eine
 
 ## benchmarks (smell: `O(n log n)`)
 
-- 1e6: 00:01
-- 1e7: 16:00
-- 1e8: xxxx (ensure: 00:18, index: 00:25)
+- 1e6: 1s
+- 1e7: 16s
+- 1e8: 03:33 (ensure: 18s, index: 25s, crossing: 02:07, backup: 00:43)
+- 1e9: (ensure: 185s, index: 477s, crossing: 20.5h with heavy swapping, backup 7.5min) deno process takes 8.5GB RAM
+
+Remarks: Linux in a 16G RAM Machine starts paging heavily! (~40G Ram needed)
