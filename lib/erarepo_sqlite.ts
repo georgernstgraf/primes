@@ -2,9 +2,9 @@ import { Database } from "@db/sqlite";
 
 // Create in-memory SQLite database
 const db = new Database(":memory:");
-// Set SQLite pragmas for performance
-// db.exec("PRAGMA journal_mode = WAL;");
-// db.exec("PRAGMA synchronous = NORMAL;");
+db.exec("PRAGMA journal_mode = OFF;");
+db.exec("PRAGMA temp_store = MEMORY;");
+db.exec("PRAGMA synchronous = OFF;");
 
 // Create the numbers table
 db.exec(`
@@ -12,6 +12,10 @@ db.exec(`
         id number NOT NULL
     );
 `);
+
+export function vacuum() {
+    db.exec("vacuum");
+}
 export function smallest_number_in_db(): number | null {
     const result = db.sql`SELECT id FROM numbers ORDER BY id ASC LIMIT 1`;
     // either: [{"id":2}] or: []
@@ -112,9 +116,11 @@ export function ensure_numbers(max_ensure: number): number {
         ensuringtook,
         `repo: Ensured numbers, did ${insertions} insertions.`,
     );
+    vacuum();
     db.sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_numbers_id ON numbers (id)`;
     console.timeLog(ensuringtook, `repo: Created unique index on numbers.id`);
     console.timeEnd(ensuringtook);
+    vacuum();
     return insertions;
 }
 export function backup_db(name: string): void {

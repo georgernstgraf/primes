@@ -17,7 +17,9 @@ const timeall = "Total time";
 console.time(timeall);
 
 dbstats();
+db.vacuum();
 db.ensure_numbers(sieve_size);
+db.vacuum();
 dbstats();
 
 const limit: number = db.biggest_number_in_db()!;
@@ -35,6 +37,7 @@ for (
 ) {
     Deno.stdout.writeSync(te.encode(` ${p}`));
     const _deleted = db.delete_multiples_of(p);
+    db.vacuum();
     //console.log(`deleted ${deleted} multiples of ${p}`);
 }
 Deno.stdout.writeSync(te.encode("\n"));
