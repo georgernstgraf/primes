@@ -116,13 +116,9 @@ export function ensure_numbers(max_ensure: number): number {
         ensuringtook,
         `repo: Ensured numbers, did ${insertions} insertions.`,
     );
-    console.time("vacuum");
-    vacuum();
     db.sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_numbers_id ON numbers (id)`;
     console.timeLog(ensuringtook, `repo: Created unique index on numbers.id`);
     console.timeEnd(ensuringtook);
-    vacuum();
-    console.timeEnd("vacuum");
     return insertions;
 }
 export function backup_db(name: string): void {
