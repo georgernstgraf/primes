@@ -6,7 +6,7 @@
         "era": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes.ts",
         "eravera": "deno run --allow-env --allow-read --allow-write --allow-ffi eratosthenes_verify.ts",
         "eranew": "deno -A prisma migrate reset --force  --schema prisma/eratosthenes",
-        "eranative": "deno run --allow-env --allow-read --allow-write --allow-ffi era_native.ts",
+        "eranative": "time deno run --allow-env --allow-read --allow-write --allow-ffi era_native.ts",
         "clean": "rm -f eranative_backup_*.db"
     },
     "fmt": {
