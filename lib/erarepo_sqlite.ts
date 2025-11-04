@@ -1,8 +1,8 @@
 import { Database } from "@db/sqlite";
 
 // Create in-memory SQLite database
-const db = new Database(":memory:");
-db.exec("PRAGMA journal_mode = OFF;");
+const db = new Database("temp.db");
+db.exec("PRAGMA journal_mode = MEMORY;");
 db.exec("PRAGMA temp_store = MEMORY;");
 db.exec("PRAGMA synchronous = OFF;");
 
@@ -116,11 +116,13 @@ export function ensure_numbers(max_ensure: number): number {
         ensuringtook,
         `repo: Ensured numbers, did ${insertions} insertions.`,
     );
+    console.time("vacuum");
     vacuum();
     db.sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_numbers_id ON numbers (id)`;
     console.timeLog(ensuringtook, `repo: Created unique index on numbers.id`);
     console.timeEnd(ensuringtook);
     vacuum();
+    console.timeEnd("vacuum");
     return insertions;
 }
 export function backup_db(name: string): void {

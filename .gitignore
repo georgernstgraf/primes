@@ -5,4 +5,5 @@ eratosthenes_prisma/
 *.sqlite-shm
 *.sqlite-wal
 openssl_check.so
-eranative_backup_*.db
+**/*.db
+thebillion.db
