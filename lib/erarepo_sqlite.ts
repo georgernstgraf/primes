@@ -17,14 +17,14 @@ export function vacuum() {
     db.exec("vacuum");
 }
 export function smallest_number_in_db(): number | null {
-    const result = db.sql`SELECT id FROM numbers ORDER BY id ASC LIMIT 1`;
+    const result = db.sql`SELECT MIN(id) as min FROM numbers`;
     // either: [{"id":2}] or: []
-    return result.length > 0 ? result[0].id : null;
+    return result.length > 0 ? result[0].min : null;
 }
 export function biggest_number_in_db(): number | null {
-    const result = db.sql`SELECT id FROM numbers ORDER BY id DESC LIMIT 1`;
+    const result = db.sql`SELECT MAX(id) as max FROM numbers`;
     // either: [{"id":2}] or: []
-    return result.length > 0 ? result[0].id : null;
+    return result.length > 0 ? result[0].max : null;
 }
 export function total_count_in_db(): number {
     const result = db.sql`SELECT COUNT(*) as count FROM numbers`;
