@@ -17,12 +17,12 @@ export function vacuum() {
     db.exec("vacuum");
 }
 export function smallest_number_in_db(): number | null {
-    const result = db.sql`SELECT MIN(id) as min FROM numbers`;
+    const result = db.sql`SELECT MIN(id) FROM numbers`;
     // either: [{"id":2}] or: []
     return result.length > 0 ? result[0].min : null;
 }
 export function biggest_number_in_db(): number | null {
-    const result = db.sql`SELECT MAX(id) as max FROM numbers`;
+    const result = db.sql`SELECT MAX(id) FROM numbers`;
     // either: [{"id":2}] or: []
     return result.length > 0 ? result[0].max : null;
 }
